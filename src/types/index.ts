@@ -1,0 +1,59 @@
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'customer' | 'designer';
+  profileImage?: string;
+}
+
+export interface ProjectRequest {
+  id: string;
+  title: string;
+  description: string;
+  customerId: string;
+  customerName: string;
+  images: string[];
+  material: string;
+  budget?: number;
+  timeframe?: string;
+  status: 'open' | 'assigned' | 'completed';
+  createdAt: string;
+  additionalDetails?: string;
+}
+
+export interface Proposal {
+  id: string;
+  requestId: string;
+  designerId: string;
+  designerName: string;
+  designerImage?: string;
+  price: number;
+  estimatedTime: string;
+  message: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  createdAt: string;
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  content: string;
+  timestamp: string;
+  read: boolean;
+}
+
+export interface TimelineUpdate {
+  id: string;
+  requestId: string;
+  status: 'design' | 'material' | 'production' | 'quality' | 'shipping' | 'delivered';
+  message: string;
+  timestamp: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
