@@ -14,7 +14,7 @@ const Marketplace = () => {
   const [filteredRequests, setFilteredRequests] = useState<ProjectRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [materialFilter, setMaterialFilter] = useState<string>("");
+  const [materialFilter, setMaterialFilter] = useState<string>("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const Marketplace = () => {
       );
     }
     
-    if (materialFilter) {
+    if (materialFilter && materialFilter !== "all") {
       filtered = filtered.filter(req => req.material === materialFilter);
     }
     
@@ -101,7 +101,7 @@ const Marketplace = () => {
                 <SelectValue placeholder="Filter by material" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Materials</SelectItem>
+                <SelectItem value="all">All Materials</SelectItem>
                 {uniqueMaterials.map(material => (
                   <SelectItem key={material} value={material}>{material}</SelectItem>
                 ))}
