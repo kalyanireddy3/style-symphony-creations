@@ -189,7 +189,7 @@ const Index = () => {
         <div className="container mx-auto px-4 max-w-screen-xl">
           <div className="bg-fashion-purple text-white rounded-lg p-8 text-center">
             <h2 className="text-3xl font-serif mb-4">Ready to bring your fashion ideas to life?</h2>
-            <p className="text-lg mb-6">Join Style Symphony today and connect with talented designers around the world.</p>
+            <p className="text-lg mb-6">Join StyleVerse today and connect with talented designers around the world.</p>
             <Link to="/auth">
               <Button variant="outline" className="bg-white text-fashion-purple hover:bg-gray-100">
                 Get Started Now
@@ -204,7 +204,7 @@ const Index = () => {
         <div className="container mx-auto px-4 max-w-screen-xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-serif text-xl mb-4">Style Symphony</h3>
+              <h3 className="font-serif text-xl mb-4">StyleVerse</h3>
               <p className="text-gray-300">Custom fashion, designed just for you.</p>
             </div>
             <div>
@@ -216,11 +216,11 @@ const Index = () => {
             </div>
             <div>
               <h4 className="font-medium mb-4">Contact</h4>
-              <p className="text-gray-300">contact@stylesymphony.com</p>
+              <p className="text-gray-300">contact@styleverse.com</p>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-4 text-center text-gray-400">
-            <p>&copy; 2025 Style Symphony. All rights reserved.</p>
+            <p>&copy; 2025 StyleVerse. All rights reserved.</p>
           </div>
         </div>
       </footer>

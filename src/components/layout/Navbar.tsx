@@ -31,7 +31,7 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
     <nav className="border-b border-gray-200 py-4 px-6 bg-white">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-2xl font-serif text-fashion-purple">
-          Style Symphony
+          StyleVerse
         </Link>
 
         <div className="flex items-center gap-6">

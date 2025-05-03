@@ -16,7 +16,7 @@ const Auth = () => {
       await mockLogin(email, password);
       toast({
         title: "Login successful!",
-        description: "Welcome back to Style Symphony.",
+        description: "Welcome back to StyleVerse.",
       });
       navigate('/');
     } catch (error) {
@@ -36,7 +36,7 @@ const Auth = () => {
       await mockRegister(name, email, password, role);
       toast({
         title: "Registration successful!",
-        description: "Welcome to Style Symphony.",
+        description: "Welcome to StyleVerse.",
       });
       navigate('/');
     } catch (error) {
@@ -55,7 +55,7 @@ const Auth = () => {
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="hidden md:block">
           <div className="space-y-4">
-            <h1 className="text-4xl font-serif text-fashion-purple">Style Symphony</h1>
+            <h1 className="text-4xl font-serif text-fashion-purple">StyleVerse</h1>
             <p className="text-xl text-gray-600">Where your custom fashion dreams come to life.</p>
             <div className="mt-6 space-y-2">
               <div className="flex items-center gap-2">
