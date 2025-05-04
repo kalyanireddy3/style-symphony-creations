@@ -70,9 +70,14 @@ const RequestCard = ({ request, showActions = true }: RequestCardProps) => {
           <Badge variant="outline" className="bg-fashion-purple-light text-fashion-purple-dark">
             {request.material}
           </Badge>
-          {request.budget && (
+          {request.budget && !request.acceptedPrice && (
             <Badge variant="outline" className="bg-fashion-purple-light text-fashion-purple-dark">
               Budget: ${request.budget}
+            </Badge>
+          )}
+          {request.acceptedPrice && (
+            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+              Price: ${request.acceptedPrice}
             </Badge>
           )}
           {request.timeframe && (

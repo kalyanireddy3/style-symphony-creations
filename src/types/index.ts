@@ -20,6 +20,10 @@ export interface ProjectRequest {
   status: 'open' | 'assigned' | 'completed';
   createdAt: string;
   additionalDetails?: string;
+  acceptedProposalId?: string;
+  acceptedPrice?: number;
+  designerId?: string;
+  designerName?: string;
 }
 
 export interface Proposal {
@@ -47,13 +51,25 @@ export interface Message {
 export interface TimelineUpdate {
   id: string;
   requestId: string;
-  status: 'design' | 'material' | 'production' | 'quality' | 'shipping' | 'delivered';
+  status: 'design' | 'material' | 'production' | 'quality' | 'shipping' | 'delivered' | 'assigned' | 'stitched' | 'dyed' | 'fitting' | 'out_for_delivery';
   message: string;
   timestamp: string;
+  paymentRequired?: boolean;
+  paymentAmount?: number;
+  paymentStatus?: 'pending' | 'paid' | 'not_required';
 }
 
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+}
+
+export interface Payment {
+  id: string;
+  requestId: string;
+  timelineUpdateId: string;
+  amount: number;
+  status: 'pending' | 'paid' | 'failed';
+  timestamp: string;
 }

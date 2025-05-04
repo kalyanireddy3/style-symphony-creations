@@ -1,5 +1,4 @@
-
-import { ProjectRequest, Proposal, User, Message, TimelineUpdate } from "@/types";
+import { ProjectRequest, Proposal, User, Message, TimelineUpdate, Payment } from "@/types";
 
 // Mock Users
 export const mockUsers: User[] = [
@@ -165,6 +164,9 @@ export const mockTimelineUpdates: TimelineUpdate[] = [
   }
 ];
 
+// Mock Payments
+export const mockPayments: Payment[] = [];
+
 // Mock Authentication Function
 let currentUser: User | null = null;
 
@@ -316,8 +318,26 @@ export const mockUpdateProposalStatus = (proposalId: string, status: 'accepted' 
       if (requestIndex !== -1) {
         mockRequests[requestIndex] = {
           ...mockRequests[requestIndex],
-          status: 'assigned'
+          status: 'assigned',
+          acceptedProposalId: proposalId,
+          acceptedPrice: mockProposals[proposalIndex].price,
+          designerId: mockProposals[proposalIndex].designerId,
+          designerName: mockProposals[proposalIndex].designerName
         };
+        
+        // Add an 'assigned' timeline update automatically
+        const newUpdate: TimelineUpdate = {
+          id: `update${mockTimelineUpdates.length + 1}`,
+          requestId: mockRequests[requestIndex].id,
+          status: 'assigned',
+          message: 'Proposal accepted. Project is now assigned to the designer.',
+          timestamp: new Date().toISOString(),
+          paymentRequired: true,
+          paymentAmount: mockProposals[proposalIndex].price * 0.25, // 25% advance payment
+          paymentStatus: 'pending'
+        };
+        
+        mockTimelineUpdates.push(newUpdate);
       }
     }
     
@@ -346,14 +366,55 @@ export const mockSendMessage = (receiverId: string, content: string): Promise<Me
   });
 };
 
-export const mockAddTimelineUpdate = (requestId: string, status: TimelineUpdate['status'], message: string): Promise<TimelineUpdate> => {
+export const mockMakePayment = (requestId: string, timelineUpdateId: string, amount: number): Promise<Payment> => {
+  return new Promise((resolve) => {
+    const newPayment: Payment = {
+      id: `payment${mockPayments.length + 1}`,
+      requestId,
+      timelineUpdateId,
+      amount,
+      status: 'paid',
+      timestamp: new Date().toISOString()
+    };
+    
+    mockPayments.push(newPayment);
+    
+    // Update the timeline update payment status
+    const updateIndex = mockTimelineUpdates.findIndex(update => update.id === timelineUpdateId);
+    if (updateIndex !== -1) {
+      mockTimelineUpdates[updateIndex] = {
+        ...mockTimelineUpdates[updateIndex],
+        paymentStatus: 'paid'
+      };
+    }
+    
+    setTimeout(() => resolve(newPayment), 300);
+  });
+};
+
+export const mockGetPaymentsByRequestId = (requestId: string): Promise<Payment[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockPayments.filter(payment => payment.requestId === requestId)), 300);
+  });
+};
+
+export const mockAddTimelineUpdate = (
+  requestId: string, 
+  status: TimelineUpdate['status'], 
+  message: string,
+  paymentRequired: boolean = false,
+  paymentAmount?: number
+): Promise<TimelineUpdate> => {
   return new Promise((resolve) => {
     const newUpdate: TimelineUpdate = {
       id: `update${mockTimelineUpdates.length + 1}`,
       requestId,
       status,
       message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      paymentRequired,
+      paymentAmount,
+      paymentStatus: paymentRequired ? 'pending' : 'not_required'
     };
     
     mockTimelineUpdates.push(newUpdate);

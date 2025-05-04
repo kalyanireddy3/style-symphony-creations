@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
@@ -158,13 +157,28 @@ const RequestDetails = () => {
       
       // Update request status
       if (request) {
-        setRequest({ ...request, status: 'assigned' });
+        // Get the accepted proposal
+        const acceptedProposal = proposals.find(p => p.id === proposalId);
+        if (acceptedProposal) {
+          setRequest({ 
+            ...request, 
+            status: 'assigned',
+            acceptedProposalId: proposalId,
+            acceptedPrice: acceptedProposal.price,
+            designerId: acceptedProposal.designerId,
+            designerName: acceptedProposal.designerName
+          });
+        }
       }
       
       toast({
         title: "Proposal accepted",
         description: "You can now message the designer to discuss details.",
       });
+
+      // Get the updated timeline
+      const updatedTimelineData = await mockGetTimelineByRequestId(id!);
+      setTimeline(updatedTimelineData);
     } catch (error) {
       toast({
         title: "Error",
@@ -224,6 +238,15 @@ const RequestDetails = () => {
   const handleMessageDesigner = (designerId: string) => {
     // In a real app, this would navigate to a chat page or open a chat modal
     navigate(`/messages/${designerId}`);
+  };
+
+  const handleManageOrder = (requestId: string) => {
+    navigate(`/manage-order/${requestId}`);
+  };
+
+  const handleMakePayment = (updateId: string, amount: number) => {
+    if (!id) return;
+    navigate(`/payment/${id}/${updateId}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -318,6 +341,11 @@ const RequestDetails = () => {
                 Posted on {formatDate(request.createdAt)}
               </p>
             </div>
+            {request.acceptedPrice && (
+              <p className="mt-1 text-green-600 font-medium">
+                Accepted Price: ${request.acceptedPrice.toFixed(2)}
+              </p>
+            )}
           </div>
           
           {/* Customer can't submit proposals, Designer can't see their own request */}
@@ -335,6 +363,18 @@ const RequestDetails = () => {
               )}
             </div>
           )}
+          
+          {/* Designer has a button to manage the order if it's assigned to them */}
+          {isAssignedDesigner && request.status === 'assigned' && (
+            <div className="mt-4 md:mt-0">
+              <Button 
+                onClick={() => handleManageOrder(request.id)}
+                className="bg-fashion-purple hover:bg-fashion-purple-dark"
+              >
+                Manage Order
+              </Button>
+            </div>
+          )}
         </div>
         
         <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab}>
@@ -345,7 +385,7 @@ const RequestDetails = () => {
                 Proposals{proposals.length > 0 ? ` (${proposals.length})` : ''}
               </TabsTrigger>
             )}
-            {request.status === 'assigned' && (isUsersRequest || isAssignedDesigner) && (
+            {request.status !== 'open' && (isUsersRequest || isAssignedDesigner) && (
               <TabsTrigger value="timeline">Timeline</TabsTrigger>
             )}
             {user?.role === 'designer' && request.status === 'open' && !userProposal && (
@@ -457,6 +497,7 @@ const RequestDetails = () => {
                     onAccept={isUsersRequest ? () => handleAcceptProposal(proposal.id) : undefined}
                     onReject={isUsersRequest ? () => handleRejectProposal(proposal.id) : undefined}
                     onMessage={isUsersRequest || isAssignedDesigner ? () => handleMessageDesigner(proposal.designerId) : undefined}
+                    onManageOrder={isAssignedDesigner && proposal.status === 'accepted' ? () => handleManageOrder(request.id) : undefined}
                   />
                 ))}
               </div>
@@ -471,7 +512,12 @@ const RequestDetails = () => {
           <TabsContent value="timeline">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
-                <Timeline updates={timeline} />
+                <Timeline 
+                  updates={timeline}
+                  isDesigner={isAssignedDesigner}
+                  isCustomer={isUsersRequest} 
+                  onMakePayment={isUsersRequest ? handleMakePayment : undefined}
+                />
               </div>
               
               {isAssignedDesigner && (
@@ -479,6 +525,14 @@ const RequestDetails = () => {
                   <TimelineUpdateForm 
                     onSubmit={handleAddTimelineUpdate}
                     existingStatuses={existingTimelineStatuses}
+                    customStatuses={[
+                      { value: 'assigned', label: 'Order Assigned' },
+                      { value: 'stitched', label: 'Stitching Complete' },
+                      { value: 'dyed', label: 'Dyeing Complete' },
+                      { value: 'fitting', label: 'Fitting Complete' },
+                      { value: 'out_for_delivery', label: 'Out for Delivery' },
+                      { value: 'delivered', label: 'Delivered' },
+                    ]}
                   />
                 </div>
               )}

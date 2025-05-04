@@ -8,7 +8,9 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NewRequest from "./pages/customer/NewRequest";
 import MyRequests from "./pages/customer/MyRequests";
+import Payment from "./pages/customer/Payment";
 import Marketplace from "./pages/designer/Marketplace";
+import ManageOrder from "./pages/designer/ManageOrder";
 import RequestDetails from "./pages/shared/RequestDetails";
 import Messages from "./pages/shared/Messages";
 import NotFound from "./pages/NotFound";
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/requests/:id" element={<RequestDetails />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:partnerId" element={<Messages />} />
+          <Route path="/manage-order/:id" element={<ManageOrder />} />
+          <Route path="/payment/:id/:updateId" element={<Payment />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

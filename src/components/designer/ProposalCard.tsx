@@ -12,6 +12,7 @@ interface ProposalCardProps {
   onAccept?: () => void;
   onReject?: () => void;
   onMessage?: () => void;
+  onManageOrder?: () => void;
 }
 
 const ProposalCard = ({ 
@@ -19,7 +20,8 @@ const ProposalCard = ({
   isCustomer = false, 
   onAccept, 
   onReject,
-  onMessage 
+  onMessage,
+  onManageOrder
 }: ProposalCardProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -111,13 +113,23 @@ const ProposalCard = ({
       )}
       
       {((isCustomer && proposal.status === 'accepted') || (!isCustomer && proposal.status === 'accepted')) && (
-        <CardFooter>
+        <CardFooter className="flex-col gap-2">
           <Button 
             onClick={onMessage}
-            className="w-full bg-fashion-purple hover:bg-fashion-purple-dark"
+            className="w-full bg-fashion-purple hover:bg-fashion-purple-dark mb-2"
           >
             Message Designer
           </Button>
+          
+          {!isCustomer && proposal.status === 'accepted' && (
+            <Button 
+              onClick={onManageOrder}
+              variant="outline"
+              className="w-full border-fashion-purple text-fashion-purple hover:bg-fashion-purple-light"
+            >
+              Manage Order
+            </Button>
+          )}
         </CardFooter>
       )}
     </Card>

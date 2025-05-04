@@ -1,15 +1,24 @@
 
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { TimelineUpdate } from "@/types";
 
 interface TimelineProps {
   updates: TimelineUpdate[];
   isDesigner?: boolean;
-  onAddUpdate?: (status: TimelineUpdate['status'], message: string) => void;
+  isCustomer?: boolean;
+  onAddUpdate?: (status: TimelineUpdate['status'], message: string, paymentRequired: boolean, paymentAmount?: number) => void;
+  onMakePayment?: (updateId: string, amount: number) => void;
 }
 
-const Timeline = ({ updates, isDesigner = false }: TimelineProps) => {
+const Timeline = ({ 
+  updates, 
+  isDesigner = false, 
+  isCustomer = false,
+  onAddUpdate,
+  onMakePayment
+}: TimelineProps) => {
   const sortedUpdates = [...updates].sort((a, b) => 
     new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
@@ -63,6 +72,36 @@ const Timeline = ({ updates, isDesigner = false }: TimelineProps) => {
           color: 'bg-emerald-100 text-emerald-800 border-emerald-200',
           description: 'Your item has been delivered.'
         };
+      case 'assigned':
+        return { 
+          label: 'Order Assigned', 
+          color: 'bg-blue-100 text-blue-800 border-blue-200',
+          description: 'The order has been assigned to the designer.'
+        };
+      case 'stitched':
+        return { 
+          label: 'Stitching Complete', 
+          color: 'bg-pink-100 text-pink-800 border-pink-200',
+          description: 'Stitching phase is complete.'
+        };
+      case 'dyed':
+        return { 
+          label: 'Dyeing Complete', 
+          color: 'bg-violet-100 text-violet-800 border-violet-200',
+          description: 'Dyeing process is complete.'
+        };
+      case 'fitting':
+        return { 
+          label: 'Fitting Complete', 
+          color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+          description: 'Fitting adjustments are complete.'
+        };
+      case 'out_for_delivery':
+        return { 
+          label: 'Out for Delivery', 
+          color: 'bg-lime-100 text-lime-800 border-lime-200',
+          description: 'Your item is out for delivery.'
+        };
       default:
         return { 
           label: 'Update', 
@@ -91,7 +130,32 @@ const Timeline = ({ updates, isDesigner = false }: TimelineProps) => {
                     <Badge className={color}>{label}</Badge>
                     <time className="text-xs text-gray-500">{formatDate(update.timestamp)}</time>
                   </div>
-                  <p className="text-sm text-gray-700">{update.message || description}</p>
+                  <p className="text-sm text-gray-700 mb-3">{update.message || description}</p>
+                  
+                  {update.paymentRequired && update.paymentAmount && (
+                    <div className="mt-2 p-2 border border-dashed border-amber-300 rounded bg-amber-50">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">
+                            Payment Required: ${update.paymentAmount.toFixed(2)}
+                          </p>
+                          <p className="text-xs text-amber-700">
+                            Status: {update.paymentStatus === 'paid' ? 'Paid ✓' : 'Pending'}
+                          </p>
+                        </div>
+                        
+                        {isCustomer && update.paymentStatus === 'pending' && onMakePayment && (
+                          <Button 
+                            size="sm"
+                            onClick={() => onMakePayment(update.id, update.paymentAmount!)}
+                            className="bg-amber-500 hover:bg-amber-600"
+                          >
+                            Pay Now
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </li>
             );
