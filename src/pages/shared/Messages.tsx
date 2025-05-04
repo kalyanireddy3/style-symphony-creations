@@ -14,7 +14,7 @@ import {
   mockProposals
 } from '@/services/mockData';
 import { User, Message, Proposal } from '@/types';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatPartner {
   user: User;
@@ -139,11 +139,29 @@ const Messages = () => {
     setSelectedPartner(partner);
   };
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, image?: File) => {
     if (!user || !selectedPartner) return;
     
     try {
-      const newMessage = await mockSendMessage(selectedPartner.id, content);
+      // Convert image to data URL if provided
+      let imageUrl: string | undefined;
+      
+      if (image) {
+        imageUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result as string);
+          };
+          reader.readAsDataURL(image);
+        });
+      }
+      
+      const newMessage = await mockSendMessage(
+        selectedPartner.id, 
+        content, 
+        imageUrl
+      );
+      
       setMessages(prev => [...prev, newMessage]);
     } catch (error) {
       toast({
@@ -222,7 +240,9 @@ const Messages = () => {
                         <p className="font-medium truncate">{partner.name}</p>
                         {lastMessage ? (
                           <div className="flex items-center justify-between">
-                            <p className="text-sm text-gray-500 truncate">{lastMessage.content}</p>
+                            <p className="text-sm text-gray-500 truncate">
+                              {lastMessage.image ? '📷 Image' : lastMessage.content}
+                            </p>
                             <p className="text-xs text-gray-400">{formatTime(lastMessage.timestamp)}</p>
                           </div>
                         ) : (

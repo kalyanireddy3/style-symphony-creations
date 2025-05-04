@@ -5,17 +5,21 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Message, User } from "@/types";
+import { PaperclipIcon, XCircleIcon } from 'lucide-react';
 
 interface ChatProps {
   messages: Message[];
   currentUser: User;
   otherUser: User;
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, image?: File) => void;
 }
 
 const Chat = ({ messages, currentUser, otherUser, onSendMessage }: ChatProps) => {
   const [newMessage, setNewMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -24,12 +28,41 @@ const Chat = ({ messages, currentUser, otherUser, onSendMessage }: ChatProps) =>
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   }, [messages]);
+
+  // Create preview URL when image is selected
+  useEffect(() => {
+    if (selectedImage) {
+      const url = URL.createObjectURL(selectedImage);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [selectedImage]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMessage.trim()) {
-      onSendMessage(newMessage);
+    if (newMessage.trim() || selectedImage) {
+      onSendMessage(newMessage, selectedImage || undefined);
       setNewMessage("");
+      setSelectedImage(null);
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const cancelImageUpload = () => {
+    setSelectedImage(null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
   
@@ -48,6 +81,22 @@ const Chat = ({ messages, currentUser, otherUser, onSendMessage }: ChatProps) =>
       .join('')
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const renderMessageContent = (message: Message) => {
+    if (message.image) {
+      return (
+        <div className="flex flex-col gap-2">
+          {message.content && <p className="text-sm">{message.content}</p>}
+          <img 
+            src={message.image} 
+            alt="Shared image" 
+            className="max-w-full rounded-lg object-cover max-h-60" 
+          />
+        </div>
+      );
+    }
+    return <p className="text-sm">{message.content}</p>;
   };
 
   return (
@@ -82,7 +131,7 @@ const Chat = ({ messages, currentUser, otherUser, onSendMessage }: ChatProps) =>
                         : 'bg-gray-100 text-gray-800'}
                     `}
                   >
-                    <p className="text-sm">{message.content}</p>
+                    {renderMessageContent(message)}
                     <p className={`text-xs mt-1 ${isCurrentUser ? 'text-purple-100' : 'text-gray-500'}`}>
                       {formatTime(message.timestamp)}
                     </p>
@@ -97,8 +146,42 @@ const Chat = ({ messages, currentUser, otherUser, onSendMessage }: ChatProps) =>
           </div>
         )}
       </ScrollArea>
+
+      {previewUrl && (
+        <div className="p-2 border-t">
+          <div className="relative inline-block">
+            <img 
+              src={previewUrl} 
+              alt="Upload preview" 
+              className="h-20 rounded-md object-cover" 
+            />
+            <button 
+              onClick={cancelImageUpload}
+              className="absolute -top-2 -right-2 rounded-full bg-white shadow"
+            >
+              <XCircleIcon size={20} className="text-red-500" />
+            </button>
+          </div>
+        </div>
+      )}
       
       <form onSubmit={handleSubmit} className="border-t p-4 flex gap-2">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          className="hidden"
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={handleAttachClick}
+          className="flex-shrink-0"
+        >
+          <PaperclipIcon size={20} />
+        </Button>
         <Input 
           placeholder="Type a message..." 
           value={newMessage}

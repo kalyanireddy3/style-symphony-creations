@@ -51,9 +51,14 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                     </Link>
                   </>
                 ) : (
-                  <Link to="/marketplace" className="text-gray-700 hover:text-fashion-purple transition-colors">
-                    Designer Marketplace
-                  </Link>
+                  <>
+                    <Link to="/marketplace" className="text-gray-700 hover:text-fashion-purple transition-colors">
+                      Designer Marketplace
+                    </Link>
+                    <Link to="/manage-orders" className="text-gray-700 hover:text-fashion-purple transition-colors">
+                      Manage Orders
+                    </Link>
+                  </>
                 )}
                 <Link to="/messages" className="text-gray-700 hover:text-fashion-purple transition-colors">
                   Messages
@@ -85,6 +90,13 @@ const Navbar = ({ user, onLogout }: NavbarProps) => {
                       {user.role === 'customer' ? 'My Requests' : 'Marketplace'}
                     </Link>
                   </DropdownMenuItem>
+                  {user.role === 'designer' && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/manage-orders" className="cursor-pointer w-full">
+                        Manage Orders
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link to="/messages" className="cursor-pointer w-full">
                       Messages

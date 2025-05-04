@@ -11,6 +11,7 @@ import MyRequests from "./pages/customer/MyRequests";
 import Payment from "./pages/customer/Payment";
 import Marketplace from "./pages/designer/Marketplace";
 import ManageOrder from "./pages/designer/ManageOrder";
+import ManageOrders from "./pages/designer/ManageOrders";
 import RequestDetails from "./pages/shared/RequestDetails";
 import Messages from "./pages/shared/Messages";
 import NotFound from "./pages/NotFound";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/new-request" element={<NewRequest />} />
           <Route path="/my-requests" element={<MyRequests />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/manage-orders" element={<ManageOrders />} />
           <Route path="/requests/:id" element={<RequestDetails />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/messages/:partnerId" element={<Messages />} />

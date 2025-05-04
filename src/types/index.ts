@@ -46,6 +46,7 @@ export interface Message {
   content: string;
   timestamp: string;
   read: boolean;
+  image?: string;
 }
 
 export interface TimelineUpdate {
@@ -72,4 +73,16 @@ export interface Payment {
   amount: number;
   status: 'pending' | 'paid' | 'failed';
   timestamp: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: 'custom' | 'clothing' | 'accessories';
+  images: string[];
+  sizes?: string[];
+  colors?: string[];
+  inStock: boolean;
 }
