@@ -2,11 +2,26 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import RequestCard from '@/components/customer/RequestCard';
 import Navbar from '@/components/layout/Navbar';
 import { mockGetAllRequests, mockGetCurrentUser, mockLogout } from '@/services/mockData';
 import { ProjectRequest, User } from '@/types';
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, TrendingUp, Users, Shirt, CheckCheck, Clock } from 'lucide-react';
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -46,6 +61,58 @@ const Index = () => {
       console.error('Error logging out:', error);
     }
   };
+
+  // Designer testimonials
+  const designers = [
+    {
+      name: "Emma Rodriguez",
+      role: "Fashion Designer",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      quote: "StyleVerse has connected me with clients who truly appreciate bespoke fashion. It's transformed my business!"
+    },
+    {
+      name: "Marcus Chen",
+      role: "Costume Designer",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      quote: "The platform makes client communication seamless. I can focus on creating rather than administrative tasks."
+    },
+    {
+      name: "Aisha Johnson",
+      role: "Sustainable Fashion Designer",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+      quote: "I've found amazing clients who share my passion for sustainable fashion through StyleVerse."
+    },
+    {
+      name: "David Park",
+      role: "Avant-Garde Designer",
+      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      quote: "StyleVerse allows me to showcase my unique aesthetic to clients who are looking for something different."
+    }
+  ];
+
+  // How it works steps
+  const steps = [
+    {
+      icon: <Shirt className="h-12 w-12 text-fashion-purple" />,
+      title: "Create Your Request",
+      description: "Describe your dream fashion item with as much detail as possible. Add images for inspiration."
+    },
+    {
+      icon: <Users className="h-12 w-12 text-fashion-purple" />,
+      title: "Connect with Designers",
+      description: "Skilled designers will review your request and submit proposals tailored to your needs."
+    },
+    {
+      icon: <CheckCheck className="h-12 w-12 text-fashion-purple" />,
+      title: "Choose Your Designer",
+      description: "Review proposals, portfolios and prices, then select the designer who best matches your vision."
+    },
+    {
+      icon: <Clock className="h-12 w-12 text-fashion-purple" />,
+      title: "Track Progress",
+      description: "Follow your item's journey from design to completion with regular updates from your designer."
+    }
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -112,6 +179,35 @@ const Index = () => {
         </div>
       </section>
       
+      {/* How It Works Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 max-w-screen-xl">
+          <div className="text-center mb-16">
+            <span className="bg-fashion-purple/10 text-fashion-purple px-4 py-2 rounded-full font-medium">Process</span>
+            <h2 className="text-4xl font-serif mt-4 text-fashion-purple">How StyleVerse Works</h2>
+            <p className="text-gray-600 mt-2 max-w-lg mx-auto">Our simple process connects you with talented designers to bring your fashion ideas to life.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {steps.map((step, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="mb-4 bg-fashion-purple/10 p-4 rounded-full inline-block">
+                  {step.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+                <div className="mt-4 flex items-center text-fashion-purple">
+                  <span className="font-bold text-2xl">{index + 1}</span>
+                  {index < steps.length - 1 && (
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Featured Requests Section with enhanced styling */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4 max-w-screen-xl">
@@ -160,6 +256,87 @@ const Index = () => {
                 </Button>
               </Link>
             )}
+          </div>
+        </div>
+      </section>
+      
+      {/* Meet Our Designers */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 max-w-screen-xl">
+          <div className="text-center mb-12">
+            <span className="bg-fashion-purple/10 text-fashion-purple px-4 py-2 rounded-full font-medium">Our Community</span>
+            <h2 className="text-4xl font-serif mt-4 text-fashion-purple">Meet Our Talented Designers</h2>
+            <p className="text-gray-600 mt-2 max-w-lg mx-auto">Our platform connects you with skilled designers from around the world.</p>
+          </div>
+          
+          <div className="mt-16 relative">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full px-4"
+            >
+              <CarouselContent>
+                {designers.map((designer, index) => (
+                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                      <CardHeader className="pb-0">
+                        <div className="flex items-center space-x-4">
+                          <img 
+                            src={designer.image} 
+                            alt={designer.name} 
+                            className="w-16 h-16 rounded-full object-cover border-2 border-fashion-purple" 
+                          />
+                          <div>
+                            <CardTitle>{designer.name}</CardTitle>
+                            <CardDescription>{designer.role}</CardDescription>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-4">
+                        <p className="text-gray-700 italic">"{designer.quote}"</p>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="hidden md:flex justify-center gap-2 mt-8">
+                <CarouselPrevious className="relative inset-0 translate-y-0 bg-fashion-purple text-white hover:bg-fashion-purple-dark" />
+                <CarouselNext className="relative inset-0 translate-y-0 bg-fashion-purple text-white hover:bg-fashion-purple-dark" />
+              </div>
+            </Carousel>
+          </div>
+        </div>
+      </section>
+      
+      {/* Statistics Section */}
+      <section className="py-20 bg-gradient-to-r from-fashion-purple-light to-white">
+        <div className="container mx-auto px-4 max-w-screen-xl">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fashion-purple/10 text-fashion-purple mb-6">
+                <TrendingUp className="h-8 w-8" />
+              </div>
+              <h3 className="text-4xl font-bold text-gray-800">10,000+</h3>
+              <p className="text-gray-600 mt-2 text-lg">Successful Projects</p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fashion-purple/10 text-fashion-purple mb-6">
+                <Users className="h-8 w-8" />
+              </div>
+              <h3 className="text-4xl font-bold text-gray-800">5,000+</h3>
+              <p className="text-gray-600 mt-2 text-lg">Skilled Designers</p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-300">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fashion-purple/10 text-fashion-purple mb-6">
+                <CheckCircle className="h-8 w-8" />
+              </div>
+              <h3 className="text-4xl font-bold text-gray-800">99%</h3>
+              <p className="text-gray-600 mt-2 text-lg">Customer Satisfaction</p>
+            </div>
           </div>
         </div>
       </section>
