@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/hooks/use-toast";
+import AuthForm from '@/components/auth/AuthForm';
+import { useToast } from "@/components/ui/use-toast";
+import { mockLogin, mockRegister } from '@/services/mockData';
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
@@ -11,8 +13,7 @@ const Auth = () => {
   const handleLogin = async (email: string, password: string) => {
     setLoading(true);
     try {
-      // Mock login function (to be replaced with real API call)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await mockLogin(email, password);
       toast({
         title: "Login successful!",
         description: "Welcome back to StyleVerse.",
@@ -32,8 +33,7 @@ const Auth = () => {
   const handleRegister = async (name: string, email: string, password: string, role: 'customer' | 'designer') => {
     setLoading(true);
     try {
-      // Mock register function (to be replaced with real API call)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await mockRegister(name, email, password, role);
       toast({
         title: "Registration successful!",
         description: "Welcome to StyleVerse.",
@@ -55,23 +55,23 @@ const Auth = () => {
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="hidden md:block">
           <div className="space-y-4">
-            <h1 className="text-4xl font-serif text-purple-600">StyleVerse</h1>
+            <h1 className="text-4xl font-serif text-fashion-purple">StyleVerse</h1>
             <p className="text-xl text-gray-600">Where your custom fashion dreams come to life.</p>
             <div className="mt-6 space-y-2">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white">1</div>
+                <div className="h-8 w-8 rounded-full bg-fashion-purple flex items-center justify-center text-white">1</div>
                 <p>Create a custom fashion request</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white">2</div>
+                <div className="h-8 w-8 rounded-full bg-fashion-purple flex items-center justify-center text-white">2</div>
                 <p>Receive proposals from talented designers</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white">3</div>
+                <div className="h-8 w-8 rounded-full bg-fashion-purple flex items-center justify-center text-white">3</div>
                 <p>Chat directly with your chosen designer</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white">4</div>
+                <div className="h-8 w-8 rounded-full bg-fashion-purple flex items-center justify-center text-white">4</div>
                 <p>Track progress until your custom piece is delivered</p>
               </div>
             </div>
@@ -79,26 +79,7 @@ const Auth = () => {
         </div>
         
         <div>
-          <h2 className="text-2xl font-bold mb-4">Welcome to StyleVerse</h2>
-          <p className="mb-8">Sign in or create an account to get started with custom fashion.</p>
-          
-          <div className="space-y-4">
-            <button 
-              className="w-full py-2 px-4 bg-purple-600 text-white rounded hover:bg-purple-700"
-              onClick={() => handleLogin("demo@example.com", "password123")}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Sign in with Demo Account"}
-            </button>
-            
-            <button 
-              className="w-full py-2 px-4 border border-gray-300 rounded hover:bg-gray-50"
-              onClick={() => handleRegister("New User", "new@example.com", "password123", "customer")}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Create New Account"}
-            </button>
-          </div>
+          <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
         </div>
       </div>
     </div>

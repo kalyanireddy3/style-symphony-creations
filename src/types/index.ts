@@ -1,5 +1,4 @@
 
-// User object structure
 export interface User {
   id: string;
   name: string;
@@ -8,7 +7,6 @@ export interface User {
   profileImage?: string;
 }
 
-// ProjectRequest object structure
 export interface ProjectRequest {
   id: string;
   title: string;
@@ -29,7 +27,6 @@ export interface ProjectRequest {
   size?: string;
 }
 
-// Proposal object structure
 export interface Proposal {
   id: string;
   requestId: string;
@@ -43,7 +40,6 @@ export interface Proposal {
   createdAt: string;
 }
 
-// Message object structure
 export interface Message {
   id: string;
   senderId: string;
@@ -54,11 +50,10 @@ export interface Message {
   image?: string;
 }
 
-// TimelineUpdate object structure
 export interface TimelineUpdate {
   id: string;
   requestId: string;
-  status: string;
+  status: 'design' | 'material' | 'production' | 'quality' | 'shipping' | 'delivered' | 'assigned' | 'stitched' | 'dyed' | 'fitting' | 'out_for_delivery';
   message: string;
   timestamp: string;
   paymentRequired?: boolean;
@@ -66,14 +61,12 @@ export interface TimelineUpdate {
   paymentStatus?: 'pending' | 'paid' | 'not_required';
 }
 
-// AuthState object structure
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
-// Payment object structure
 export interface Payment {
   id: string;
   requestId: string;
@@ -83,7 +76,6 @@ export interface Payment {
   timestamp: string;
 }
 
-// Product object structure
 export interface Product {
   id: string;
   name: string;
