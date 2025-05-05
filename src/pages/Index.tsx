@@ -118,7 +118,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar user={user} onLogout={handleLogout} />
       
-      {/* Enhanced Hero Section with gradient background */}
+      {/* Enhanced Hero Section with gradient background and fashion model image */}
       <section className="bg-gradient-to-r from-fashion-purple-light to-white py-20">
         <div className="container mx-auto px-4 max-w-screen-xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -169,8 +169,8 @@ const Index = () => {
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-fashion-purple-light rounded-full opacity-60"></div>
               <div className="relative z-10 rounded-lg overflow-hidden shadow-2xl transform rotate-1">
                 <img 
-                  src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=600&q=80" 
-                  alt="Fashion Design" 
+                  src="https://images.unsplash.com/photo-1549062573-edc78a53ffa6?auto=format&fit=crop&w=600&q=80" 
+                  alt="Fashion Model" 
                   className="w-full h-auto rounded-lg"
                 />
               </div>
