@@ -11,7 +11,8 @@ import {
   mockGetMessagesByUsers, 
   mockSendMessage, 
   mockUsers,
-  mockProposals
+  mockProposals,
+  mockRequests
 } from '@/services/mockData';
 import { User, Message, Proposal } from '@/types';
 import { useToast } from "@/hooks/use-toast";
@@ -46,25 +47,29 @@ const Messages = () => {
         const partners: ChatPartner[] = [];
         
         if (userData.role === 'customer') {
-          // Customers can chat with designers who have accepted proposals
+          // Customers can chat with designers who have proposals on their requests
           const acceptedProposals = mockProposals.filter(
             p => p.status === 'accepted'
           );
           
           for (const proposal of acceptedProposals) {
-            const designer = mockUsers.find(u => u.id === proposal.designerId);
-            if (designer) {
-              const messages = await mockGetMessagesByUsers(userData.id, designer.id);
-              const lastMessage = messages.length > 0 
-                ? messages.sort((a, b) => 
-                    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-                  )[0] 
-                : undefined;
-                
-              partners.push({
-                user: designer,
-                lastMessage
-              });
+            // Find the request to verify it belongs to this customer
+            const request = mockRequests.find(r => r.id === proposal.requestId);
+            if (request && request.customerId === userData.id) {
+              const designer = mockUsers.find(u => u.id === proposal.designerId);
+              if (designer) {
+                const messages = await mockGetMessagesByUsers(userData.id, designer.id);
+                const lastMessage = messages.length > 0 
+                  ? messages.sort((a, b) => 
+                      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                    )[0] 
+                  : undefined;
+                  
+                partners.push({
+                  user: designer,
+                  lastMessage
+                });
+              }
             }
           }
         } else {
@@ -74,19 +79,22 @@ const Messages = () => {
           );
           
           for (const proposal of acceptedProposals) {
-            const customer = mockUsers.find(u => u.id === proposal.designerId);
-            if (customer) {
-              const messages = await mockGetMessagesByUsers(userData.id, customer.id);
-              const lastMessage = messages.length > 0 
-                ? messages.sort((a, b) => 
-                    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-                  )[0] 
-                : undefined;
-                
-              partners.push({
-                user: customer,
-                lastMessage
-              });
+            const request = mockRequests.find(r => r.id === proposal.requestId);
+            if (request) {
+              const customer = mockUsers.find(u => u.id === request.customerId);
+              if (customer) {
+                const messages = await mockGetMessagesByUsers(userData.id, customer.id);
+                const lastMessage = messages.length > 0 
+                  ? messages.sort((a, b) => 
+                      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                    )[0] 
+                  : undefined;
+                  
+                partners.push({
+                  user: customer,
+                  lastMessage
+                });
+              }
             }
           }
         }
@@ -158,7 +166,7 @@ const Messages = () => {
       
       const newMessage = await mockSendMessage(
         selectedPartner.id, 
-        content, 
+        content,
         imageUrl
       );
       

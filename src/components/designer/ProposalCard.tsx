@@ -112,13 +112,13 @@ const ProposalCard = ({
         </CardFooter>
       )}
       
-      {((isCustomer && proposal.status === 'accepted') || (!isCustomer && proposal.status === 'accepted')) && (
+      {proposal.status === 'accepted' && (
         <CardFooter className="flex-col gap-2">
           <Button 
             onClick={onMessage}
             className="w-full bg-fashion-purple hover:bg-fashion-purple-dark mb-2"
           >
-            Message Designer
+            {isCustomer ? "Message Designer" : "Message Customer"}
           </Button>
           
           {!isCustomer && proposal.status === 'accepted' && (

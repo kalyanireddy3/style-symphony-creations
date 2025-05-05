@@ -24,6 +24,7 @@ export interface ProjectRequest {
   acceptedPrice?: number;
   designerId?: string;
   designerName?: string;
+  size?: string;
 }
 
 export interface Proposal {

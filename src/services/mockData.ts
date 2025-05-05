@@ -345,7 +345,7 @@ export const mockUpdateProposalStatus = (proposalId: string, status: 'accepted' 
   });
 };
 
-export const mockSendMessage = (receiverId: string, content: string): Promise<Message> => {
+export const mockSendMessage = (receiverId: string, content: string, imageUrl?: string): Promise<Message> => {
   return new Promise((resolve, reject) => {
     if (!currentUser) {
       reject(new Error("Not authenticated"));
@@ -358,7 +358,8 @@ export const mockSendMessage = (receiverId: string, content: string): Promise<Me
       receiverId,
       content,
       timestamp: new Date().toISOString(),
-      read: false
+      read: false,
+      image: imageUrl
     };
     
     mockMessages.push(newMessage);

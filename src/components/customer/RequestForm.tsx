@@ -6,10 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const materialOptions = [
   "Cotton", "Silk", "Linen", "Polyester", "Wool", "Denim", "Leather", "Velvet", "Satin", "Other"
+];
+
+const sizeOptions = [
+  "XS", "S", "M", "L", "XL", "XXL", "Custom"
 ];
 
 interface RequestFormProps {
@@ -21,6 +25,7 @@ interface RequestFormProps {
     timeframe: string;
     images: File[];
     additionalDetails?: string;
+    size?: string;
   }) => void;
 }
 
@@ -33,6 +38,7 @@ const RequestForm = ({ onSubmit }: RequestFormProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [additionalDetails, setAdditionalDetails] = useState("");
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [size, setSize] = useState("");
   const { toast } = useToast();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +89,8 @@ const RequestForm = ({ onSubmit }: RequestFormProps) => {
       budget: budget ? parseFloat(budget) : undefined,
       timeframe,
       images,
-      additionalDetails
+      additionalDetails,
+      size
     });
   };
 
@@ -139,6 +146,25 @@ const RequestForm = ({ onSubmit }: RequestFormProps) => {
             </div>
             
             <div className="space-y-2">
+              <Label htmlFor="size">Size</Label>
+              <Select 
+                value={size} 
+                onValueChange={setSize}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sizeOptions.map((sizeOption) => (
+                    <SelectItem key={sizeOption} value={sizeOption}>{sizeOption}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="budget">Budget (Optional)</Label>
               <Input 
                 id="budget" 
@@ -149,25 +175,25 @@ const RequestForm = ({ onSubmit }: RequestFormProps) => {
                 onChange={(e) => setBudget(e.target.value)}
               />
             </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="timeframe">Timeframe Needed *</Label>
-            <Select 
-              value={timeframe} 
-              onValueChange={setTimeframe}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="When do you need it?" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="flexible">Flexible</SelectItem>
-                <SelectItem value="1-2 weeks">1-2 weeks</SelectItem>
-                <SelectItem value="3-4 weeks">3-4 weeks</SelectItem>
-                <SelectItem value="1-2 months">1-2 months</SelectItem>
-                <SelectItem value="3+ months">3+ months</SelectItem>
-              </SelectContent>
-            </Select>
+            
+            <div className="space-y-2">
+              <Label htmlFor="timeframe">Timeframe Needed *</Label>
+              <Select 
+                value={timeframe} 
+                onValueChange={setTimeframe}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="When do you need it?" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="flexible">Flexible</SelectItem>
+                  <SelectItem value="1-2 weeks">1-2 weeks</SelectItem>
+                  <SelectItem value="3-4 weeks">3-4 weeks</SelectItem>
+                  <SelectItem value="1-2 months">1-2 months</SelectItem>
+                  <SelectItem value="3+ months">3+ months</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="space-y-2">

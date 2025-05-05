@@ -5,7 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import RequestForm from '@/components/customer/RequestForm';
 import { mockGetCurrentUser, mockLogout, mockCreateRequest } from '@/services/mockData';
 import { User } from '@/types';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const NewRequest = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -51,6 +51,7 @@ const NewRequest = () => {
     timeframe: string;
     images: File[];
     additionalDetails?: string;
+    size?: string;
   }) => {
     if (!user) {
       toast({
@@ -74,7 +75,8 @@ const NewRequest = () => {
         budget: requestData.budget,
         timeframe: requestData.timeframe,
         images: imageUrls,
-        additionalDetails: requestData.additionalDetails
+        additionalDetails: requestData.additionalDetails,
+        size: requestData.size
       });
       
       toast({
