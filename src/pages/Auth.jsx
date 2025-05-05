@@ -10,7 +10,7 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleLogin = async (email, password) => {
     setLoading(true);
     try {
       await mockLogin(email, password);
@@ -30,7 +30,7 @@ const Auth = () => {
     }
   };
 
-  const handleRegister = async (name: string, email: string, password: string, role: 'customer' | 'designer') => {
+  const handleRegister = async (name, email, password, role) => {
     setLoading(true);
     try {
       await mockRegister(name, email, password, role);
