@@ -1,5 +1,5 @@
 
-// Re-export from the main implementation
-import { useToast, toast } from "@/hooks/use-toast.ts";
+// Re-export from the hooks implementation
+import { useToast, toast } from "@/hooks/use-toast";
 
 export { useToast, toast };
