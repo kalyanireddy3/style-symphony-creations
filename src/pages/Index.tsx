@@ -318,7 +318,7 @@ const Index = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fashion-purple/10 text-fashion-purple mb-6">
                 <TrendingUp className="h-8 w-8" />
               </div>
-              <h3 className="text-4xl font-bold text-gray-800">10,000+</h3>
+              <h3 className="text-4xl font-bold text-gray-800">1,000+</h3>
               <p className="text-gray-600 mt-2 text-lg">Successful Projects</p>
             </div>
             
@@ -326,7 +326,7 @@ const Index = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-fashion-purple/10 text-fashion-purple mb-6">
                 <Users className="h-8 w-8" />
               </div>
-              <h3 className="text-4xl font-bold text-gray-800">5,000+</h3>
+              <h3 className="text-4xl font-bold text-gray-800">500+</h3>
               <p className="text-gray-600 mt-2 text-lg">Skilled Designers</p>
             </div>
             
