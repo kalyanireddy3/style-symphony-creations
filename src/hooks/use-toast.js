@@ -1,5 +1,5 @@
 
-import { useToast as useToastLib, toast as toastLib } from "@/components/ui/toast"
+// Re-export from the TypeScript implementation
+import { useToast, toast } from "./use-toast.ts";
 
-export const useToast = useToastLib;
-export const toast = toastLib;
+export { useToast, toast };

@@ -138,7 +138,7 @@ type Toast = Omit<ToastProps, "id"> & {
   update: (props: ToastProps) => void
 }
 
-function toast(props: ToastProps): Toast {
+export function toast(props: ToastProps): Toast {
   const id = props.id || genId()
 
   const update = (props: ToastProps) =>
@@ -167,7 +167,7 @@ function toast(props: ToastProps): Toast {
   }
 }
 
-function useToast() {
+export function useToast() {
   const [state, setState] = React.useState(memoryState)
 
   React.useEffect(() => {
@@ -186,5 +186,3 @@ function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
-
-export { useToast, toast }
