@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import RequestForm from '@/components/customer/RequestForm';
-import { mockGetCurrentUser, mockLogout, mockCreateRequest } from '@/services/mockData';
+import authService from '@/services/api';
 import { User } from '@/types';
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +16,7 @@ const NewRequest = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const userData = await mockGetCurrentUser();
+        const userData = await authService.users.getUsers();
         
         if (!userData || userData.role !== 'customer') {
           // If not logged in or not a customer, redirect to auth
@@ -36,7 +36,7 @@ const NewRequest = () => {
 
   const handleLogout = async () => {
     try {
-      await mockLogout();
+      await authService.auth.logout();
       navigate('/auth');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -68,7 +68,7 @@ const NewRequest = () => {
       // Convert File objects to image URLs (in a real app, this would upload to a server)
       const imageUrls = requestData.images.map(file => URL.createObjectURL(file));
       
-      await mockCreateRequest({
+      await authService.requests.createRequest({
         title: requestData.title,
         description: requestData.description,
         material: requestData.material,

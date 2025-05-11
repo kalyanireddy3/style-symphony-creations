@@ -1,94 +1,93 @@
+"use client"
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import Navbar from '@/components/layout/Navbar';
-import { Card, CardContent } from "@/components/ui/card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { mockGetCurrentUser, mockLogout, mockProposals, mockRequests } from '@/services/mockData';
-import { User, ProjectRequest, Proposal } from '@/types';
+import { useState, useEffect } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import Navbar from "@/components/layout/Navbar"
+import { Card, CardContent } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/hooks/use-toast"
+import type { User, ProjectRequest, Proposal } from "@/types"
+import { authService, requestService, proposalService } from "@/services/api"
 
 const ManageOrders = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [acceptedProposals, setAcceptedProposals] = useState<Proposal[]>([]);
-  const [requests, setRequests] = useState<ProjectRequest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null)
+  const [acceptedProposals, setAcceptedProposals] = useState<Proposal[]>([])
+  const [requests, setRequests] = useState<ProjectRequest[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await mockGetCurrentUser();
-        
+        const userData = authService.getCurrentUser()
+
         if (!userData) {
-          navigate('/auth');
-          return;
+          navigate("/auth")
+          return
         }
-        
-        if (userData.role !== 'designer') {
-          navigate('/');
-          return;
+
+        if (userData.role !== "designer") {
+          navigate("/")
+          return
         }
-        
-        setUser(userData);
-        
+
+        setUser(userData)
+
         // Get all accepted proposals by this designer
-        const designerProposals = mockProposals.filter(
-          p => p.designerId === userData.id && p.status === 'accepted'
-        );
-        
-        setAcceptedProposals(designerProposals);
-        
+        const proposalsResponse = await proposalService.getProposals({
+          designerId: userData.id,
+          status: "accepted",
+        })
+        const designerProposals = proposalsResponse.data
+
+        setAcceptedProposals(designerProposals)
+
         // Get the corresponding requests
-        const requestsData = mockRequests.filter(
-          r => designerProposals.some(p => p.requestId === r.id)
-        );
-        
-        setRequests(requestsData);
-        
+        const requestIds = designerProposals.map((p) => p.requestId)
+        const requestsData = []
+
+        for (const requestId of requestIds) {
+          const requestResponse = await requestService.getRequestById(requestId)
+          requestsData.push(requestResponse.data)
+        }
+
+        setRequests(requestsData)
       } catch (error) {
         toast({
           title: "Error",
           description: "Failed to load orders data",
           variant: "destructive",
-        });
+        })
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    
-    fetchData();
-  }, [navigate, toast]);
+    }
+
+    fetchData()
+  }, [navigate, toast])
 
   const handleLogout = async () => {
     try {
-      await mockLogout();
-      navigate('/auth');
+      authService.logout()
+      navigate("/auth")
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error)
     }
-  };
+  }
 
   const getStatusBadgeColor = (status: string) => {
-    switch(status) {
-      case 'assigned':
-        return 'bg-blue-500';
-      case 'completed':
-        return 'bg-green-500';
+    switch (status) {
+      case "assigned":
+        return "bg-blue-500"
+      case "completed":
+        return "bg-green-500"
       default:
-        return 'bg-yellow-500';
+        return "bg-yellow-500"
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -98,23 +97,27 @@ const ManageOrders = () => {
           <p className="text-center">Loading orders...</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar user={user} onLogout={handleLogout} />
-      
+
       <div className="container mx-auto py-10 px-4">
         <h1 className="text-3xl font-serif text-fashion-purple mb-6">Manage Orders</h1>
-        
+
         {acceptedProposals.length === 0 ? (
           <Card>
             <CardContent className="p-6">
               <p className="text-center py-8 text-gray-500">
                 You don't have any accepted proposals yet.
                 <br />
-                Visit the <Link to="/marketplace" className="text-fashion-purple hover:underline">marketplace</Link> to submit proposals.
+                Visit the{" "}
+                <Link to="/marketplace" className="text-fashion-purple hover:underline">
+                  marketplace
+                </Link>{" "}
+                to submit proposals.
               </p>
             </CardContent>
           </Card>
@@ -132,8 +135,8 @@ const ManageOrders = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {requests.map(request => {
-                    const proposal = acceptedProposals.find(p => p.requestId === request.id);
+                  {requests.map((request) => {
+                    const proposal = acceptedProposals.find((p) => p.requestId === request.id)
                     return (
                       <TableRow key={request.id}>
                         <TableCell className="font-medium">{request.title}</TableCell>
@@ -145,16 +148,12 @@ const ManageOrders = () => {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => navigate(`/manage-order/${request.id}`)}
-                          >
+                          <Button variant="outline" size="sm" onClick={() => navigate(`/manage-order/${request.id}`)}>
                             View Details
                           </Button>
                         </TableCell>
                       </TableRow>
-                    );
+                    )
                   })}
                 </TableBody>
               </Table>
@@ -163,7 +162,7 @@ const ManageOrders = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ManageOrders;
+export default ManageOrders
